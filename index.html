@@ -1,0 +1,1879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FixMyBusiness — AI Finds & Fixes Your Business Problems</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-glow: rgba(59, 130, 246, 0.4);
+            --accent: #8b5cf6;
+            --accent-glow: rgba(139, 92, 246, 0.3);
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --pink: #ec4899;
+
+            --bg-main: #0a0a0f;
+            --bg-card: #111118;
+            --bg-card-hover: #16161f;
+            --bg-elevated: #1a1a24;
+            --border: rgba(255,255,255,0.06);
+            --border-hover: rgba(255,255,255,0.12);
+
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --text-dim: #475569;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.85); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-14px); }
+        }
+        @keyframes float2 {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+        }
+        @keyframes float3 {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            33% { transform: translateY(-8px) translateX(4px); }
+            66% { transform: translateY(4px) translateX(-4px); }
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        @keyframes glow-pulse {
+            0%, 100% { box-shadow: 0 0 20px var(--primary-glow); }
+            50% { box-shadow: 0 0 50px var(--primary-glow), 0 0 80px rgba(139,92,246,0.15); }
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            20% { transform: rotate(-4deg); }
+            40% { transform: rotate(4deg); }
+            60% { transform: rotate(-2deg); }
+            80% { transform: rotate(2deg); }
+        }
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes orbit {
+            from { transform: rotate(0deg) translateX(120px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
+        }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: var(--primary); }
+        }
+        @keyframes particle-float {
+            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.6; }
+            50% { transform: translateY(-60px) translateX(20px) scale(1.2); opacity: 1; }
+            100% { transform: translateY(-120px) translateX(-10px) scale(0.8); opacity: 0; }
+        }
+        @keyframes border-glow {
+            0%, 100% { border-color: rgba(59,130,246,0.2); }
+            50% { border-color: rgba(59,130,246,0.5); }
+        }
+        @keyframes slide-right {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes number-glow {
+            0%, 100% { text-shadow: 0 0 10px var(--primary-glow); }
+            50% { text-shadow: 0 0 30px var(--primary-glow), 0 0 60px var(--accent-glow); }
+        }
+        @keyframes check-pop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 0.4; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        @keyframes rotate-bg {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes morph {
+            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+        }
+
+        /* SCROLL ANIMATIONS */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-60px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(60px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.85);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-scale.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .d1 { transition-delay: 0.1s; }
+        .d2 { transition-delay: 0.2s; }
+        .d3 { transition-delay: 0.3s; }
+        .d4 { transition-delay: 0.4s; }
+        .d5 { transition-delay: 0.5s; }
+        .d6 { transition-delay: 0.6s; }
+
+        /* ===== NAV ===== */
+        .nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(10,10,15,0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+            animation: fadeInDown 0.8s ease;
+        }
+        .nav.scrolled {
+            background: rgba(10,10,15,0.92);
+            box-shadow: 0 4px 40px rgba(0,0,0,0.3);
+        }
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+            padding: 0 24px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: white;
+            text-decoration: none;
+        }
+        .logo-icon {
+            width: 38px; height: 38px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; color: white;
+            animation: wiggle 4s ease-in-out infinite;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .nav-link {
+            padding: 8px 16px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .nav-link:hover { color: white; background: rgba(255,255,255,0.05); }
+        .nav-cta {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            font-family: inherit;
+            margin-left: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+        .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--primary-glow); }
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            color: white;
+        }
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 70px; left: 0; right: 0;
+            background: rgba(17,17,24,0.98);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            z-index: 999;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .mobile-nav.open { display: flex; }
+        .mobile-nav a {
+            display: block; padding: 14px 16px; border-radius: 10px;
+            color: var(--text-secondary); text-decoration: none;
+            font-weight: 500; font-size: 0.95rem; transition: all 0.2s;
+        }
+        .mobile-nav a:hover { background: rgba(255,255,255,0.05); color: white; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-toggle { display: block; }
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            padding: 150px 24px 120px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ANIMATED BACKGROUND */
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+        .hero-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+        }
+        .hero-orb.o1 {
+            width: 600px; height: 600px;
+            background: rgba(59,130,246,0.12);
+            top: -200px; right: -150px;
+            animation: morph 15s ease-in-out infinite, float 10s ease-in-out infinite;
+        }
+        .hero-orb.o2 {
+            width: 500px; height: 500px;
+            background: rgba(139,92,246,0.1);
+            bottom: -150px; left: -100px;
+            animation: morph 12s ease-in-out infinite reverse, float2 12s ease-in-out infinite;
+        }
+        .hero-orb.o3 {
+            width: 350px; height: 350px;
+            background: rgba(236,72,153,0.08);
+            top: 40%; left: 20%;
+            animation: morph 18s ease-in-out infinite, float3 14s ease-in-out infinite;
+        }
+        .hero-orb.o4 {
+            width: 200px; height: 200px;
+            background: rgba(34,197,94,0.06);
+            top: 20%; right: 25%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        /* GRID PATTERN */
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 40%, transparent 100%);
+        }
+
+        /* FLOATING PARTICLES */
+        .particles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+        .particle {
+            position: absolute;
+            width: 4px; height: 4px;
+            background: var(--primary);
+            border-radius: 99px;
+            opacity: 0;
+            animation: particle-float 6s infinite;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+        .hero-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 22px;
+            background: rgba(59,130,246,0.1);
+            border: 1px solid rgba(59,130,246,0.2);
+            border-radius: 99px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease, border-glow 3s ease-in-out infinite;
+        }
+        .hero-pill-dot {
+            width: 8px; height: 8px;
+            background: var(--success);
+            border-radius: 99px;
+            position: relative;
+        }
+        .hero-pill-dot::after {
+            content: '';
+            position: absolute; inset: -4px;
+            border-radius: 99px;
+            border: 2px solid var(--success);
+            animation: pulse-ring 2s infinite;
+        }
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            line-height: 1.05;
+            color: white;
+            margin-bottom: 10px;
+            letter-spacing: -0.04em;
+            animation: fadeInUp 0.8s ease 0.15s both;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, var(--primary), var(--accent), var(--pink), var(--primary));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 5s ease infinite;
+        }
+        .hero-sub {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 20px;
+            animation: fadeInUp 0.8s ease 0.3s both;
+        }
+
+        /* ANIMATED COUNTER IN HERO */
+        .hero-counter-section {
+            margin: 30px auto 40px;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+        .hero-counter-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .hero-counter-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 6px;
+        }
+        .hero-counter-prefix {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--success);
+            animation: number-glow 3s ease-in-out infinite;
+        }
+        .hero-counter-value {
+            font-size: 5rem;
+            font-weight: 900;
+            color: var(--success);
+            letter-spacing: -0.03em;
+            animation: number-glow 3s ease-in-out infinite;
+            font-variant-numeric: tabular-nums;
+        }
+        .hero-counter-suffix {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+        .hero-counter-note {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s ease 0.5s both;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+            position: relative;
+        }
+        .btn-hero { padding: 20px 40px; font-size: 1.1rem; }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            box-shadow: 0 8px 30px var(--primary-glow);
+            overflow: hidden;
+        }
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            animation: shimmer 3s infinite;
+        }
+        .btn-primary:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 14px 50px var(--primary-glow);
+        }
+        .btn-outline {
+            background: rgba(255,255,255,0.03);
+            color: var(--text-secondary);
+            border: 2px solid var(--border-hover);
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: white;
+            background: rgba(59,130,246,0.05);
+            transform: translateY(-3px);
+        }
+        .btn-white {
+            background: white;
+            color: var(--bg-main);
+            box-shadow: 0 8px 30px rgba(255,255,255,0.15);
+        }
+        .btn-white:hover { transform: translateY(-4px); box-shadow: 0 14px 50px rgba(255,255,255,0.2); }
+
+        .hero-guarantee {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            background: rgba(34,197,94,0.08);
+            border: 1px solid rgba(34,197,94,0.2);
+            border-radius: 99px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--success);
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        /* HERO VISUAL CARD */
+        .hero-visual {
+            margin-top: 60px;
+            position: relative;
+            animation: fadeInUp 1s ease 0.7s both;
+        }
+        .hero-card {
+            max-width: 580px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 20px 80px rgba(0,0,0,0.4);
+            position: relative;
+        }
+        .hero-card-head {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+        }
+        .hero-card-av {
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, var(--warning), var(--danger));
+            border-radius: 99px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 800; font-size: 0.85rem;
+        }
+        .hero-card-name { font-weight: 700; color: white; font-size: 0.95rem; }
+        .hero-card-sub { font-size: 0.78rem; color: var(--text-muted); }
+        .hero-card-items { display: flex; flex-direction: column; gap: 10px; }
+        .hero-card-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 16px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: all 0.5s;
+        }
+        .hero-card-item.done {
+            background: rgba(34,197,94,0.06);
+            border-color: rgba(34,197,94,0.15);
+        }
+        .hero-card-check {
+            width: 26px; height: 26px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        .hero-card-check.checked {
+            background: var(--success);
+            color: white;
+            animation: check-pop 0.4s ease;
+        }
+        .hero-card-check.unchecked {
+            border: 2px solid rgba(255,255,255,0.12);
+        }
+        .hero-card-item-text { font-size: 0.9rem; font-weight: 500; color: var(--text-secondary); }
+        .hero-card-item.done .hero-card-item-text { color: var(--success); }
+
+        .hero-float {
+            position: absolute;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            z-index: 3;
+        }
+        .hero-float-1 {
+            top: -24px; right: -70px;
+            animation: float 4s ease-in-out infinite, glow-pulse 4s ease-in-out infinite;
+        }
+        .hero-float-2 {
+            bottom: -24px; left: -70px;
+            animation: float2 5s ease-in-out infinite;
+        }
+        .hero-float-value {
+            font-size: 1.6rem; font-weight: 900;
+        }
+        .hero-float-value.green { color: var(--success); }
+        .hero-float-value.blue { color: var(--primary); }
+        .hero-float-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; }
+
+        /* STATS BAR */
+        .stats-bar {
+            margin-top: 60px;
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.9s both;
+        }
+        .stat-item { text-align: center; }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: white;
+            font-variant-numeric: tabular-nums;
+        }
+        .stat-label {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .hero { padding: 120px 20px 80px; min-height: auto; }
+            .hero h1 { font-size: 2.8rem; }
+            .hero-counter-value { font-size: 3.5rem; }
+            .hero-counter-prefix { font-size: 1.8rem; }
+            .hero-float { display: none; }
+            .stats-bar { gap: 24px; }
+        }
+
+        /* ===== MARQUEE BANNER ===== */
+        .marquee-wrap {
+            overflow: hidden;
+            background: rgba(59,130,246,0.05);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+        }
+        .marquee-track {
+            display: flex;
+            animation: marquee 30s linear infinite;
+            width: max-content;
+        }
+        .marquee-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 32px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .marquee-item span { font-size: 1.1rem; }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            padding: 120px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-dark {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .section-dark .section { margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 64px; }
+        .section-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 18px;
+            border-radius: 99px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+            border: 1px solid;
+        }
+        .section-badge.blue { background: rgba(59,130,246,0.08); color: var(--primary); border-color: rgba(59,130,246,0.15); }
+        .section-badge.red { background: rgba(239,68,68,0.08); color: var(--danger); border-color: rgba(239,68,68,0.15); }
+        .section-badge.green { background: rgba(34,197,94,0.08); color: var(--success); border-color: rgba(34,197,94,0.15); }
+        .section-badge.purple { background: rgba(139,92,246,0.08); color: var(--accent); border-color: rgba(139,92,246,0.15); }
+        .section-badge.yellow { background: rgba(245,158,11,0.08); color: var(--warning); border-color: rgba(245,158,11,0.15); }
+        .section-header h2 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 14px;
+            letter-spacing: -0.03em;
+            line-height: 1.12;
+        }
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        /* PROBLEMS */
+        .problems-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .problem-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .problem-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--danger), var(--warning));
+            transform: scaleX(0);
+            transition: transform 0.4s;
+            transform-origin: left;
+        }
+        .problem-card:hover::before { transform: scaleX(1); }
+        .problem-card:hover {
+            border-color: rgba(239,68,68,0.3);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 40px rgba(239,68,68,0.08);
+        }
+        .problem-icon {
+            width: 56px; height: 56px;
+            border-radius: 14px;
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.12);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin-bottom: 18px;
+        }
+        .problem-card h3 { font-size: 1.05rem; font-weight: 700; color: white; margin-bottom: 8px; }
+        .problem-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; }
+
+        @media (max-width: 768px) {
+            .problems-grid { grid-template-columns: 1fr; }
+            .section-header h2 { font-size: 2.1rem; }
+        }
+
+        /* HOW IT WORKS */
+        .steps-wrap { max-width: 700px; margin: 0 auto; position: relative; }
+        .steps-line {
+            position: absolute;
+            left: 34px; top: 50px; bottom: 50px;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--primary), var(--accent), var(--pink));
+            border-radius: 99px;
+            opacity: 0.5;
+        }
+        .step-item {
+            display: flex; gap: 24px;
+            margin-bottom: 44px; position: relative;
+        }
+        .step-item:last-child { margin-bottom: 0; }
+        .step-num {
+            width: 68px; height: 68px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 1.3rem; flex-shrink: 0;
+            box-shadow: 0 8px 30px var(--primary-glow);
+            z-index: 2;
+        }
+        .step-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 26px 30px;
+            flex: 1;
+            transition: all 0.3s;
+        }
+        .step-content:hover {
+            border-color: rgba(59,130,246,0.3);
+            box-shadow: 0 8px 30px rgba(59,130,246,0.06);
+            transform: translateX(4px);
+        }
+        .step-label {
+            font-size: 0.72rem; font-weight: 700;
+            color: var(--primary); text-transform: uppercase;
+            letter-spacing: 0.1em; margin-bottom: 6px;
+        }
+        .step-content h3 { font-size: 1.1rem; font-weight: 700; color: white; margin-bottom: 8px; }
+        .step-content p { font-size: 0.9rem; color: var(--text-muted); }
+        .step-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+        .step-tag {
+            padding: 5px 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 99px;
+            font-size: 0.76rem; font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        /* REVENUE COUNTER SECTION */
+        .revenue-section {
+            padding: 100px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .revenue-bg {
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(34,197,94,0.03), rgba(59,130,246,0.03));
+        }
+        .revenue-content { position: relative; z-index: 2; }
+        .revenue-counter-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 4px;
+            margin: 20px 0;
+        }
+        .revenue-dollar {
+            font-size: 3rem; font-weight: 900;
+            color: var(--success);
+            animation: number-glow 3s ease-in-out infinite;
+        }
+        .revenue-number {
+            font-size: 7rem; font-weight: 900;
+            color: var(--success);
+            letter-spacing: -0.03em;
+            animation: number-glow 3s ease-in-out infinite;
+            font-variant-numeric: tabular-nums;
+        }
+        .revenue-suffix {
+            font-size: 2rem; font-weight: 700;
+            color: var(--text-secondary);
+        }
+        .revenue-items {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        .revenue-item {
+            text-align: center;
+            padding: 20px;
+        }
+        .revenue-item-val {
+            font-size: 2.5rem; font-weight: 900;
+            color: white;
+            font-variant-numeric: tabular-nums;
+        }
+        .revenue-item-label {
+            font-size: 0.85rem; color: var(--text-muted);
+            margin-top: 4px; font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .revenue-number { font-size: 4.5rem; }
+            .revenue-dollar { font-size: 2rem; }
+            .revenue-items { gap: 20px; }
+        }
+
+        /* FEATURES */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 32px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card::after {
+            content: '';
+            position: absolute; inset: 0;
+            border-radius: 18px;
+            padding: 2px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        .feature-card:hover::after { opacity: 1; }
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 50px rgba(0,0,0,0.3);
+        }
+        .feature-icon {
+            width: 58px; height: 58px;
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; margin-bottom: 20px;
+            border: 1px solid;
+        }
+        .feature-card h3 { font-size: 1.05rem; font-weight: 700; color: white; margin-bottom: 8px; }
+        .feature-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; }
+
+        @media (max-width: 768px) {
+            .features-grid { grid-template-columns: 1fr; }
+        }
+
+        /* TESTIMONIALS */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .test-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 30px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .test-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(59,130,246,0.3);
+            box-shadow: 0 12px 40px rgba(59,130,246,0.06);
+        }
+        .test-stars { color: var(--warning); font-size: 1rem; letter-spacing: 2px; margin-bottom: 16px; }
+        .test-text {
+            font-size: 0.92rem; color: var(--text-secondary);
+            line-height: 1.7; margin-bottom: 20px; font-style: italic;
+        }
+        .test-highlight {
+            background: rgba(59,130,246,0.1);
+            padding: 1px 5px; border-radius: 4px;
+            color: var(--primary); font-weight: 600; font-style: normal;
+        }
+        .test-author { display: flex; align-items: center; gap: 12px; }
+        .test-av {
+            width: 44px; height: 44px; border-radius: 99px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.85rem; color: white;
+        }
+        .test-name { font-weight: 700; color: white; font-size: 0.9rem; }
+        .test-role { font-size: 0.78rem; color: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            .testimonials-grid { grid-template-columns: 1fr; }
+        }
+
+        /* PRICING */
+        .pricing-container { max-width: 500px; margin: 0 auto; }
+        .pricing-card {
+            background: var(--bg-card);
+            border: 2px solid var(--primary);
+            border-radius: 24px;
+            padding: 48px 44px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 80px rgba(59,130,246,0.15);
+            animation: glow-pulse 4s ease-in-out infinite;
+        }
+        .pricing-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--pink), var(--primary));
+            background-size: 200% 100 3s ease infinite;
+        }
+        .pricing-ribbon {
+            position: absolute;
+            top: 22px; right: -34px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 6px 44px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            transform: rotate(45deg);
+            letter-spacing: 0.06em;
+        }
+        .pricing-price { margin: 12px 0 28px; }
+        .pricing-dollar { font-size: 1.8rem; font-weight: 800; color: var(--text-muted); vertical-align: super; }
+        .pricing-amount {
+            font-size: 5rem; font-weight: 900; color: white;
+            letter-spacing: -0.03em; line-height: 1;
+        }
+        .pricing-period { font-size: 1.1rem; color: var(--text-muted); font-weight: 500; }
+        .pricing-note { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 28px; }
+        .pricing-features {
+            text-align: left;
+            display: flex; flex-direction: column; gap: 14px;
+            margin-bottom: 32px;
+        }
+        .pricing-feature {
+            display: flex; align-items: center; gap: 12px;
+            font-size: 0.95rem; color: var(--text-secondary);
+        }
+        .pricing-feature-icon {
+            width: 26px; height: 26px;
+            background: rgba(34,197,94,0.1);
+            color: var(--success);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; flex-shrink: 0;
+        }
+        .pricing-btn {
+            width: 100%; padding: 20px;
+            font-size: 1.15rem; border-radius: 16px;
+        }
+        .pricing-guarantee {
+            margin-top: 20px; padding: 16px 20px;
+            background: rgba(34,197,94,0.06);
+            border: 1px solid rgba(34,197,94,0.15);
+            border-radius: 14px;
+            font-size: 0.88rem; color: var(--success);
+            font-weight: 600; line-height: 1.5;
+        }
+
+        /* FAQ */
+        .faq-list { max-width: 700px; margin: 0 auto; }
+        .faq-item {
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 12px;
+            background: var(--bg-card);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .faq-item.active {
+            border-color: rgba(59,130,246,0.3);
+            box-shadow: 0 4px 30px rgba(59,130,246,0.06);
+        }
+        .faq-q {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 22px 26px; cursor: pointer;
+            font-weight: 600; color: var(--text-secondary);
+            font-size: 1rem; gap: 16px; transition: color 0.2s;
+        }
+        .faq-q:hover { color: white; }
+        .faq-toggle {
+            width: 32px; height: 32px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 99px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; font-size: 1.1rem;
+            color: var(--text-muted); transition: all 0.3s;
+        }
+        .faq-item.active .faq-toggle {
+            background: var(--primary); border-color: var(--primary);
+            color: white; transform: rotate(45deg);
+        }
+        .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+        .faq-item.active .faq-a { max-height: 250px; }
+        .faq-a-inner { padding: 0 26px 22px; color: var(--text-muted); font-size: 0.92rem; line-height: 1.7; }
+
+        /* CTA */
+        .cta-wrap { padding: 24px; }
+        .cta-box {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #0f172a, #1e1b4b);
+            border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 32px;
+            padding: 80px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-box::before {
+            content: '';
+            position: absolute;
+            width: 400px; height: 400px;
+            background: rgba(59,130,246,0.1);
+            border-radius: 50%;
+            top: -150px; right: -100px;
+            filter: blur(80px);
+            animation: morph 12s ease-in-out infinite;
+        }
+        .cta-box::after {
+            content: '';
+            position: absolute;
+            width: 300px; height: 300px;
+            background: rgba(139,92,246,0.08);
+            border-radius: 50%;
+            bottom: -100px; left: -80px;
+            filter: blur(80px);
+            animation: morph 15s ease-in-out infinite reverse;
+        }
+        .cta-content { position: relative; z-index: 2; }
+        .cta-content h2 { font-size: 2.8rem; font-weight: 900; color: white; margin-bottom: 14px; letter-spacing: -0.03em; }
+        .cta-content p { font-size: 1.1rem; color: rgba(255,255,255,0.6); margin-bottom: 32px; }
+        .cta-price {
+            font-size: 3.5rem; font-weight: 900; color: var(--success);
+            margin-bottom: 8px;
+            animation: number-glow 3s ease-in-out infinite;
+        }
+        .cta-price-note { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 28px; }
+
+        /* FOOTER */
+        .footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            padding: 60px 24px 30px;
+        }
+        .footer-inner { max-width: 1200px; margin: 0 auto; }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px; margin-bottom: 40px;
+        }
+        .footer-desc { color: var(--text-muted); font-size: 0.88rem; line-height: 1.7; margin-top: 14px; }
+        .footer-heading {
+            font-size: 0.75rem; font-weight: 700;
+            color: var(--text-secondary); text-transform: uppercase;
+            letter-spacing: 0.1em; margin-bottom: 18px;
+        }
+        .footer-links a {
+            display: block; color: var(--text-muted);
+            font-size: 0.88rem; padding: 5px 0;
+            text-decoration: none; transition: color 0.2s;
+        }
+        .footer-links a:hover { color: white; }
+        .footer-bottom {
+            border-top: 1px solid var(--border);
+            padding-top: 24px;
+            display: flex; justify-content: space-between;
+            color: var(--text-dim); font-size: 0.82rem;
+            flex-wrap: wrap; gap: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .cta-content h2 { font-size: 2rem; }
+            .cta-price { font-size: 2.5rem; }
+        }
+        @media (max-width: 480px) {
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+
+        /* BACK TO TOP */
+        .back-top {
+            position: fixed;
+            bottom: 30px; right: 30px;
+            width: 50px; height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white; border: none; border-radius: 16px;
+            font-size: 1.2rem; cursor: pointer;
+            opacity: 0; transform: translateY(20px);
+            transition: all 0.4s; z-index: 500;
+            box-shadow: 0 6px 25px var(--primary-glow);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .back-top.visible { opacity: 1; transform: translateY(0); }
+        .back-top:hover { transform: translateY(-5px); }
+
+        /* CUSTOM SCROLLBAR */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-main); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 99px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="navbar">
+    <div class="nav-inner">
+        <a href="#" class="logo">
+            <div class="logo-icon">⚡</div>
+            FixMyBusiness
+        </a>
+        <div class="nav-links">
+            <a href="#problems" class="nav-link">Problems</a>
+            <a href="#how" class="nav-link">How It Works</a>
+            <a href="#features" class="nav-link">Features</a>
+            <a href="#pricing" class="nav-link">Pricing</a>
+            <a href="#faq" class="nav-link">FAQ</a>
+            <a href="https://payhip.com/b/bcRxC" target="_blank" class="nav-cta">Get Started →</a>
+        </div>
+        <button class="mobile-toggle" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
+    </div>
+</nav>
+<div class="mobile-nav" id="mobileNav">
+    <a href="#problems" onclick="closeMob()">Problems</a>
+    <a href="#how" onclick="closeMob()">How It Works</a>
+    <a href="#features" onclick="closeMob()">Features</a>
+    <a href="#pricing" onclick="closeMob()">Pricing</a>
+    <a href="#faq" onclick="closeMob()">FAQ</a>
+    <a href="https://payhip.com/b/bcRxC" target="_blank" style="color:var(--primary);font-weight:700;margin-top:8px;">Get Started →</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+    <div class="hero-bg">
+        <div class="hero-orb o1"></div>
+        <div class="hero-orb o2"></div>
+        <div class="hero-orb o3"></div>
+        <div class="hero-orb o4"></div>
+        <div class="hero-grid"></div>
+        <div class="particles" id="particles"></div>
+    </div>
+
+    <div class="hero-content">
+        <div class="hero-pill">
+            <span class="hero-pill-dot"></span>
+            AI-Powered Business Diagnostic
+        </div>
+
+        <h1>Stop Guessing.<br><span class="hero-gradient">Fix What Matters.</span></h1>
+
+        <p class="hero-sub">Every month we find your top 3 business problems and give you step-by-step checklists to fix them.</p>
+
+        <!-- SPINNING COUNTER -->
+        <div class="hero-counter-section">
+            <div class="hero-counter-label">Our clients earn on average</div>
+            <div class="hero-counter-row">
+                <span class="hero-counter-prefix">+$</span>
+                <span class="hero-counter-value" id="heroCounter">0</span>
+                <span class="hero-counter-suffix">/mo</span>
+            </div>
+            <div class="hero-counter-note">extra revenue after fixing their top 3 problems</div>
+        </div>
+
+        <div class="hero-buttons">
+            <a href="https://payhip.com/b/bcRxC" target="_blank" class="btn btn-primary btn-hero">Get Started for $50/month →</a>
+            <a href="#how" class="btn btn-outline btn-hero">See How It Works</a>
+        </div>
+
+        <div class="hero-guarantee">
+            ✅ If we don't find a problem worth more than $50 in month one — you don't pay.
+        </div>
+
+        <!-- VISUAL CARD -->
+        <div class="hero-visual">
+            <div class="hero-card">
+                <div class="hero-card-head">
+                    <div class="hero-card-av">SJ</div>
+                    <div>
+                        <div class="hero-card-name">Sarah's Monthly Checklist</div>
+                        <div class="hero-card-sub">Life Coach — Week 3 Progress</div>
+                    </div>
+                </div>
+                <div class="hero-card-items" id="heroChecklist">
+                    <div class="hero-card-item" data-index="0">
+                        <div class="hero-card-check unchecked"></div>
+                        <div class="hero-card-item-text">Add clear call-to-action on homepage</div>
+                    </div>
+                    <div class="hero-card-item" data-index="1">
+                        <div class="hero-card-check unchecked"></div>
+                        <div class="hero-card-item-text">Set up 3-email follow-up sequence</div>
+                    </div>
+                    <div class="hero-card-item" data-index="2">
+                        <div class="hero-card-check unchecked"></div>
+                        <div class="hero-card-item-text">Rewrite offer page with outcomes</div>
+                    </div>
+                </div>
+                <div class="hero-float hero-float-1">
+                    <div class="hero-float-value green" id="floatRevenue">+$0</div>
+                    <div class="hero-float-label">Extra revenue this month</div>
+                </div>
+                <div class="hero-float hero-float-2">
+                    <div class="hero-float-value blue" id="floatProblems">0/3</div>
+                    <div class="hero-float-label">Problems fixed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value"><span class="counter" data-target="200">0</span>+</div>
+                <div class="stat-label">Businesses Helped</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">$<span class="counter" data-target="2400000" data-format="short">0</span>+</div>
+                <div class="stat-label">Revenue Unlocked</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value"><span class="counter" data-target="4.9" data-decimals="1">0</span>/5</div>
+                <div class="stat-label">Average Rating</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+    <div class="marquee-track" id="marqueeTrack">
+        <div class="marquee-item"><span>🎯</span> Find Your #1 Problem</div>
+        <div class="marquee-item"><span>📋</span> Step-by-Step Checklists</div>
+        <div class="marquee-item"><span>💬</span> Weekly Accountability</div>
+        <div class="marquee-item"><span>💰</span> Average +$5K/mo Extra Revenue</div>
+        <div class="marquee-item"><span>⚡</span> Only $50/month</div>
+        <div class="marquee-item"><span>🛡️</span> Money-Back Guarantee</div>
+        <div class="marquee-item"><span>🤖</span> AI-Powered Analysis</div>
+        <div class="marquee-item"><span>📞</span> Monthly Strategy Calls</div>
+        <div class="marquee-item"><span>🎯</span> Find Your #1 Problem</div>
+        <div class="marquee-item"><span>📋</span> Step-by-Step Checklists</div>
+        <div class="marquee-item"><span>💬</span> Weekly Accountability</div>
+        <div class="marquee-item"><span>💰</span> Average +$5K/mo Extra Revenue</div>
+        <div class="marquee-item"><span>⚡</span> Only $50/month</div>
+        <div class="marquee-item"><span>🛡️</span> Money-Back Guarantee</div>
+        <div class="marquee-item"><span>🤖</span> AI-Powered Analysis</div>
+        <div class="marquee-item"><span>📞</span> Monthly Strategy Calls</div>
+    </div>
+</div>
+
+<!-- PROBLEMS -->
+<div id="problems">
+    <div class="section">
+        <div class="section-header reveal">
+            <div class="section-badge red">😩 Sound Familiar?</div>
+            <h2>The Problems Keeping<br>You Stuck</h2>
+            <p>You work hard every day. But somehow the important things never get fixed.</p>
+        </div>
+        <div class="problems-grid">
+            <div class="problem-card reveal d1">
+                <div class="problem-icon">🎯</div>
+                <h3>Don't Know What to Fix First</h3>
+                <p>Website? Offer? Prices? Follow-up? Everything feels urgent and nothing gets done.</p>
+            </div>
+            <div class="problem-card reveal d2">
+                <div class="problem-icon">🔄</div>
+                <h3>Jump From Idea to Idea</h3>
+                <p>Start something new every week but never finish what actually matters most.</p>
+            </div>
+            <div class="problem-card reveal d3">
+                <div class="problem-icon">💸</div>
+                <h3>Losing Money on Simple Mistakes</h3>
+                <p>Leads fall through cracks, offers don't convert, prices too low. Same mistakes repeated.</p>
+            </div>
+            <div class="problem-card reveal d1">
+                <div class="problem-icon">⏰</div>
+                <h3>Busy But Not Productive</h3>
+                <p>Exhausted every day but revenue doesn't move. Spinning wheels, getting nowhere.</p>
+            </div>
+            <div class="problem-card reveal d2">
+                <div class="problem-icon">😶</div>
+                <h3>No Outside Perspective</h3>
+                <p>You're alone in your business. Nobody tells you what's actually wrong.</p>
+            </div>
+            <div class="problem-card reveal d3">
+                <div class="problem-icon">📉</div>
+                <h3>Visitors Leave Without Action</h3>
+                <p>People find your site but don't contact you, don't buy, don't come back.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- REVENUE COUNTER SECTION -->
+<div class="section-dark">
+    <div class="revenue-section">
+        <div class="revenue-bg"></div>
+        <div class="revenue-content">
+            <div class="section-badge green reveal">💰 Real Results</div>
+            <h2 style="font-size:2.5rem;font-weight:900;color:white;margin-bottom:8px;" class="reveal">What If You Could Make</h2>
+            <div class="revenue-counter-row reveal">
+                <span class="revenue-dollar">+$</span>
+                <span class="revenue-number" id="revenueCounter">0</span>
+            </div>
+            <p style="font-size:1.2rem;color:var(--text-muted);margin-bottom:10px;" class="reveal">extra every single month?</p>
+            <p style="font-size:0.95rem;color:var(--text-dim);max-width:500px;margin:0 auto;" class="reveal">That's what happens when you fix the right 3 problems. Most clients see results in the first month.</p>
+
+            <div class="revenue-items">
+                <div class="revenue-item reveal d1">
+                    <div class="revenue-item-val" style="color:var(--success);">+<span class="counter" data-target="3" data-suffix="">0</span></div>
+                    <div class="revenue-item-label">Extra clients/month</div>
+                </div>
+                <div class="revenue-item reveal d2">
+                    <div class="revenue-item-val" style="color:var(--primary);">-<span class="counter" data-target="60" data-suffix="%">0</span></div>
+                    <div class="revenue-item-label">Fewer lost leads</div>
+                </div>
+                <div class="revenue-item reveal d3">
+                    <div class="revenue-item-val" style="color:var(--accent);">+<span class="counter" data-target="40" data-suffix="%">0</span></div>
+                    <div class="revenue-item-label">Higher conversion</div>
+                </div>
+                <div class="revenue-item reveal d4">
+                    <div class="revenue-item-val" style="color:var(--warning);">$<span class="counter" data-target="50">0</span></div>
+                    <div class="revenue-item-label">Monthly investment</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div id="how">
+    <div class="section">
+        <div class="section-header reveal">
+            <div class="section-badge green">✨ Simple Process</div>
+            <h2>How It Works</h2>
+            <p>Three steps. No complexity. Real results every month.</p>
+        </div>
+        <div class="steps-wrap">
+            <div class="steps-line"></div>
+            <div class="step-item reveal-left d1">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <div class="step-label">Week 1</div>
+                    <h3>Short Check-In Call (20–30 min)</h3>
+                    <p>Quick focused call. What worked? What didn't? Where are you stuck? We listen and take notes.</p>
+                    <div class="step-tags">
+                        <span class="step-tag">Zoom / Meet</span>
+                        <span class="step-tag">20-30 min</span>
+                        <span class="step-tag">Monthly</span>
+                    </div>
+                </div>
+            </div>
+            <div class="step-item reveal-right d2">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <div class="step-label">Within 48 Hours</div>
+                    <h3>"Top 3 Problems" + Checklists</h3>
+                    <p>Your 3 most important problems to fix. Each with step-by-step checklists. No guessing.</p>
+                    <div class="step-tags">
+                        <span class="step-tag">3 Problems</span>
+                        <span class="step-tag">Checklists</span>
+                        <span class="step-tag">Prioritized</span>
+                    </div>
+                </div>
+            </div>
+            <div class="step-item reveal-left d3">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <div class="step-label">Weeks 2–4</div>
+                    <h3>Weekly Progress Messages</h3>
+                    <p>"What did you finish? Where are you stuck? Here's your next step." We keep you moving.</p>
+                    <div class="step-tags">
+                        <span class="step-tag">WhatsApp</span>
+                        <span class="step-tag">Email</span>
+                        <span class="step-tag">Telegram</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FEATURES -->
+<div class="section-dark" id="features">
+    <div class="section">
+        <div class="section-header reveal">
+            <div class="section-badge purple">🤖 Everything Included</div>
+            <h2>What You Get</h2>
+            <p>AI + human expertise. You just follow the checklist.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card reveal d1">
+                <div class="feature-icon" style="background:rgba(59,130,246,0.06);border-color:rgba(59,130,246,0.12);">🔍</div>
+                <h3>AI Business Diagnostic</h3>
+                <p>Real AI analyzes your business and finds revenue-killing problems you can't see yourself.</p>
+            </div>
+            <div class="feature-card reveal d2">
+                <div class="feature-icon" style="background:rgba(34,197,94,0.06);border-color:rgba(34,197,94,0.12);">📋</div>
+                <h3>Step-by-Step Checklists</h3>
+                <p>Every problem comes with clear tasks. Check them off as you go. No confusion ever.</p>
+            </div>
+            <div class="feature-card reveal d3">
+                <div class="feature-icon" style="background:rgba(139,92,246,0.06);border-color:rgba(139,92,246,0.12);">💬</div>
+                <h3>Weekly Accountability</h3>
+                <p>Personalized weekly messages keep you on track. No more stalling or getting distracted.</p>
+            </div>
+            <div class="feature-card reveal d1">
+                <div class="feature-icon" style="background:rgba(245,158,11,0.06);border-color:rgba(245,158,11,0.12);">🎯</div>
+                <h3>Priority Ranking</h3>
+                <p>Problems ranked by money impact. Always fix the highest-ROI item first.</p>
+            </div>
+            <div class="feature-card reveal d2">
+                <div class="feature-icon" style="background:rgba(236,72,153,0.06);border-color:rgba(236,72,153,0.12);">📞</div>
+                <h3>Monthly Strategy Call</h3>
+                <p>20-30 minute focused call to diagnose what's really happening in your business.</p>
+            </div>
+            <div class="feature-card reveal d3">
+                <div class="feature-icon" style="background:rgba(34,197,94,0.06);border-color:rgba(34,197,94,0.12);">⚡</div>
+                <h3>No Tools Required</h3>
+                <p>Zoom, email, WhatsApp, Google Docs. Use what you already have. Zero learning curve.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<div id="testimonials">
+    <div class="section">
+        <div class="section-header reveal">
+            <div class="section-badge yellow">⭐ Success Stories</div>
+            <h2>Real People. Real Results.</h2>
+            <p>They were stuck. Now they're growing.</p>
+        </div>
+        <div class="testimonials-grid">
+            <div class="test-card reveal d1">
+                <div class="test-stars">★★★★★</div>
+                <div class="test-text">"My website had zero call-to-action. <span class="test-highlight">Fixed it in one day — booked 3 calls that week.</span> I was doing social media all day for nothing."</div>
+                <div class="test-author">
+                    <div class="test-av" style="background:linear-gradient(135deg,#f59e0b,#ef4444);">MR</div>
+                    <div><div class="test-name">Maria Reyes</div><div class="test-role">Life Coach</div></div>
+                </div>
+            </div>
+            <div class="test-card reveal d2">
+                <div class="test-stars">★★★★★</div>
+                <div class="test-text">"They gave me a 3-email follow-up sequence. <span class="test-highlight">Closed 2 extra clients = $1,200 from a $50 investment.</span> Insane ROI."</div>
+                <div class="test-author">
+                    <div class="test-av" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6);">JT</div>
+                    <div><div class="test-name">James Thompson</div><div class="test-role">Web Developer</div></div>
+                </div>
+            </div>
+            <div class="test-card reveal d3">
+                <div class="test-stars">★★★★★</div>
+                <div class="test-text">"I thought I needed a rebrand. Turns out I just needed to <span class="test-highlight">fix my pricing page and add testimonials.</span> So simple."</div>
+                <div class="test-author">
+                    <div class="test-av" style="background:linear-gradient(135deg,#10b981,#06b6d4);">AL</div>
+                    <div><div class="test-name">Anna Lindström</div><div class="test-role">Online Shop Owner</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PRICING -->
+<div class="section-dark" id="pricing">
+    <div class="section">
+        <div class="section-header reveal">
+            <div class="section-badge blue">💎 Simple Pricing</div>
+            <h2>One Plan. Everything.</h2>
+            <p>No tiers. No upsells. One fair price.</p>
+        </div>
+        <div class="pricing-container reveal-scale">
+            <div class="pricing-card">
+                <div class="pricing-ribbon">BEST VALUE</div>
+                <div class="pricing-price">
+                    <span class="pricing-dollar">$</span>
+                    <span class="pricing-amount">50</span>
+                    <span class="pricing-period">/month</span>
+                </div>
+                <div class="pricing-note">Less than $2/day to transform your business</div>
+                <div class="pricing-features">
+                    <div class="pricing-feature"><div class="pricing-feature-icon">✓</div>Monthly diagnostic call (20-30 min)</div>
+                    <div class="pricing-feature"><div class="pricing-feature-icon">✓</div>Personalized "Top 3 Problems" list</div>
+                    <div class="pricing-feature"><div class="pricing-feature-icon">✓</div>Step-by-step fix checklists</div>
+                    <div class="pricing-feature"><div class="pricing-feature-icon">✓</div>4 weekly progress check-ins</div>
+                    <div class="pricing-feature"><div class="pricing-feature-icon">✓</div>AI-powered business analysis</div>
+                    <div class="pricing-feature"><div class="pricing-feature-icon">✓</div>Email / WhatsApp / Telegram support</div>
+                    <div class="pricing-feature"><div class="pricing-feature-icon">✓</div>Cancel anytime — no contracts</div>
+                </div>
+                <a href="https://payhip.com/b/bcRxC" target="_blank" class="btn btn-primary pricing-btn">Get Started Now →</a>
+                <div class="pricing-guarantee">🛡️ If I don't find a problem worth more than $50 in month one — you don't pay. Zero risk.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ -->
+<div id="faq">
+    <div class="section">
+        <div class="section-header reveal">
+            <div class="section-badge blue">❓ FAQ</div>
+            <h2>Got Questions?</h2>
+        </div>
+        <div class="faq-list">
+            <div class="faq-item reveal d1"><div class="faq-q" onclick="toggleFaq(this)">Who is this for?<span class="faq-toggle">+</span></div><div class="faq-a"><div class="faq-a-inner">Solo entrepreneurs — coaches, freelancers, consultants, and small online shop owners. If you run a business by yourself and feel stuck, this is for you.</div></div></div>
+            <div class="faq-item reveal d2"><div class="faq-q" onclick="toggleFaq(this)">What tools do I need?<span class="faq-toggle">+</span></div><div class="faq-a"><div class="faq-a-inner">None! Zoom/Meet for calls, email or WhatsApp for check-ins, Google Docs for checklists. Tools you already use.</div></div></div>
+            <div class="faq-item reveal d3"><div class="faq-q" onclick="toggleFaq(this)">How is this different from a consultant?<span class="faq-toggle">+</span></div><div class="faq-a"><div class="faq-a-inner">Consultants charge $1,000-$5,000+ for a big strategy doc you never use. We give you 3 problems with checklists and hold your hand — every month for $50.</div></div></div>
+            <div class="faq-item reveal d4"><div class="faq-q" onclick="toggleFaq(this)">Can I really earn back the $50?<span class="faq-toggle">+</span></div><div class="faq-a"><div class="faq-a-inner">Yes. Fixing one problem (follow-up, CTA, offer) typically brings $300-$500+ extra per month. The $50 pays for itself 6-10x over.</div></div></div>
+            <div class="faq-item reveal d5"><div class="faq-q" onclick="toggleFaq(this)">What if it doesn't work?<span class="faq-toggle">+</span></div><div class="faq-a"><div class="faq-a-inner">If I don't find one problem worth more than $50 in month one, you don't pay. Cancel anytime. Zero risk.</div></div></div>
+            <div class="faq-item reveal d6"><div class="faq-q" onclick="toggleFaq(this)">What if I can't finish everything?<span class="faq-toggle">+</span></div><div class="faq-a"><div class="faq-a-inner">Unfinished items roll over. We reprioritize each month. Progress over perfection — go at your own pace.</div></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-wrap">
+    <div class="cta-box reveal-scale">
+        <div class="cta-content">
+            <h2>Ready to Make More Money?</h2>
+            <div class="cta-price">$50<span style="font-size:1.2rem;color:var(--text-muted);font-weight:500;">/month</span></div>
+            <p>Join 200+ entrepreneurs who stopped guessing and started growing.</p>
+            <a href="https://payhip.com/b/bcRxC" target="_blank" class="btn btn-white btn-hero">Get Started Now →</a>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-grid">
+            <div>
+                <div class="logo">
+                    <div class="logo-icon">⚡</div>
+                    FixMyBusiness
+                </div>
+                <p class="footer-desc">Monthly business diagnostics for solo entrepreneurs. Find problems. Fix them. Grow.</p>
+            </div>
+            <div>
+                <div class="footer-heading">Service</div>
+                <div class="footer-links">
+                    <a href="#how">How It Works</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#features">Features</a>
+                    <a href="#faq">FAQ</a>
+                </div>
+            </div>
+            <div>
+                <div class="footer-heading">Company</div>
+                <div class="footer-links">
+                    <a href="#">About</a>
+                    <a href="#">Contact</a>
+                    <a href="#">Blog</a>
+                </div>
+            </div>
+            <div>
+                <div class="footer-heading">Get Started</div>
+                <div class="footer-links">
+                    <a href="https://payhip.com/b/bcRxC" target="_blank">Buy Now ($50/mo)</a>
+                    <a href="#testimonials">Success Stories</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2024 FixMyBusiness. All rights reserved.</span>
+            <span>Made with ❤️ for solo entrepreneurs</span>
+        </div>
+    </div>
+</footer>
+
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ===== NAV SCROLL =====
+window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 30);
+    document.getElementById('backTop').classList.toggle('visible', window.scrollY > 500);
+});
+
+function closeMob() { document.getElementById('mobileNav').classList.remove('open'); }
+
+// ===== SMOOTH SCROLL =====
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+        const t = document.querySelector(a.getAttribute('href'));
+        if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); closeMob(); }
+    });
+});
+
+// ===== FAQ =====
+function toggleFaq(el) {
+    const item = el.parentElement;
+    const wasActive = item.classList.contains('active');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+    if (!wasActive) item.classList.add('active');
+}
+
+// ===== SCROLL REVEAL =====
+const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            revealObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => revealObserver.observe(el));
+
+// ===== HERO COUNTER (0 → 5000 SPIN) =====
+function animateCounter(el, target, duration = 2500, prefix = '', suffix = '') {
+    const start = performance.now();
+    const startVal = 0;
+
+    function update(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        // Ease out cubic
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(startVal + (target - startVal) * eased);
+        el.textContent = prefix + current.toLocaleString() + suffix;
+        if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+}
+
+// Start hero counter when visible
+let heroCounterStarted = false;
+const heroCounterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting && !heroCounterStarted) {
+            heroCounterStarted = true;
+            animateCounter(document.getElementById('heroCounter'), 5000, 3000);
+            heroCounterObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.5 });
+heroCounterObserver.observe(document.getElementById('heroCounter'));
+
+// Revenue counter
+let revenueStarted = false;
+const revenueObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting && !revenueStarted) {
+            revenueStarted = true;
+            animateCounter(document.getElementById('revenueCounter'), 5000, 3000);
+            revenueObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.5 });
+revenueObserver.observe(document.getElementById('revenueCounter'));
+
+// Generic counters
+const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const el = entry.target;
+            const target = parseFloat(el.dataset.target);
+            const decimals = parseInt(el.dataset.decimals || '0');
+            const suffix = el.dataset.suffix || '';
+            const format = el.dataset.format || '';
+            const duration = 2000;
+            const start = performance.now();
+
+            function update(now) {
+                const elapsed = now - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                let current = eased * target;
+
+                if (format === 'short') {
+                    if (current >= 1000000) el.textContent = (current / 1000000).toFixed(1) + 'M' + suffix;
+                    else if (current >= 1000) el.textContent = (current / 1000).toFixed(0) + 'K' + suffix;
+                    else el.textContent = Math.round(current) + suffix;
+                } else if (decimals > 0) {
+                    el.textContent = current.toFixed(decimals) + suffix;
+                } else {
+                    el.textContent = Math.round(current) + suffix;
+                }
+
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+            counterObserver.unobserve(el);
+        }
+    });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
+
+// ===== HERO CHECKLIST ANIMATION =====
+const checkItems = document.querySelectorAll('#heroChecklist .hero-card-item');
+let checkIdx = 0;
+let floatRevEl = document.getElementById('floatRevenue');
+let floatProbEl = document.getElementById('floatProblems');
+const revenues = [160, 320, 480];
+
+function animateCheck() {
+    if (checkIdx >= checkItems.length) {
+        setTimeout(() => {
+            checkItems.forEach(item => {
+                item.classList.remove('done');
+                const c = item.querySelector('.hero-card-check');
+                c.classList.remove('checked'); c.classList.add('unchecked');
+                c.textContent = '';
+            });
+            floatRevEl.textContent = '+$0';
+            floatProbEl.textContent = '0/3';
+            checkIdx = 0;
+            setTimeout(animateCheck, 1500);
+        }, 3500);
+        return;
+    }
+
+    const item = checkItems[checkIdx];
+    item.classList.add('done');
+    const c = item.querySelector('.hero-card-check');
+    c.classList.remove('unchecked'); c.classList.add('checked');
+    c.textContent = '✓';
+    floatRevEl.textContent = '+$' + revenues[checkIdx];
+    floatProbEl.textContent = (checkIdx + 1) + '/3';
+    checkIdx++;
+    setTimeout(animateCheck, 1400);
+}
+
+setTimeout(() => {
+    checkItems.forEach(item => {
+        item.classList.remove('done');
+        const c = item.querySelector('.hero-card-check');
+        c.classList.remove('checked'); c.classList.add('unchecked'); c.textContent = '';
+    });
+    checkIdx = 0;
+    animateCheck();
+}, 2000);
+
+// ===== PARTICLES =====
+const particleContainer = document.getElementById('particles');
+for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.top = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 6 + 's';
+    p.style.animationDuration = (4 + Math.random() * 4) + 's';
+    p.style.width = (2 + Math.random() * 4) + 'px';
+    p.style.height = p.style.width;
+    p.style.background = ['var(--primary)', 'var(--accent)', 'var(--pink)', 'var(--success)'][Math.floor(Math.random() * 4)];
+    particleContainer.appendChild(p);
+}
+
+// ===== PARALLAX ORBS ON MOUSE =====
+window.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 30;
+    const y = (e.clientY / window.innerHeight - 0.5) * 30;
+    document.querySelectorAll('.hero-orb').forEach((orb, i) => {
+        const speed = (i + 1) * 0.4;
+        orb.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+    });
+});
+
+// ===== TILT EFFECT ON HERO CARD =====
+const heroCard = document.querySelector('.hero-card');
+if (heroCard) {
+    heroCard.addEventListener('mousemove', (e) => {
+        const rect = heroCard.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        heroCard.style.transform = `perspective(800px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`;
+    });
+    heroCard.addEventListener('mouseleave', () => {
+        heroCard.style.transform = 'perspective(800px) rotateY(0) rotateX(0)';
+    });
+}
+</script>
+
+</body>
+</html>
